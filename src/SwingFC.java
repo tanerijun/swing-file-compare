@@ -11,11 +11,12 @@ public class SwingFC implements ActionListener {
     JButton jbtnComp; // button to compare the files
     JLabel jlabFirst, jlabSecond; // displays prompts
     JLabel jlabResult; // displays results and error messages
+    JCheckBox jcbLoc; // show location of mismatch when checked
 
     SwingFC() {
         JFrame jfrm = new JFrame("Compare Files");
         jfrm.setLayout(new FlowLayout());
-        jfrm.setSize(200, 190);
+        jfrm.setSize(300, 190);
         jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // text fields for the file names
@@ -33,11 +34,15 @@ public class SwingFC implements ActionListener {
         jlabSecond = new JLabel("Second file: ");
         jlabResult = new JLabel("");
 
+        // checkbox
+        jcbLoc = new JCheckBox("Show position of mismatch");
+
         // add components to content pane
         jfrm.add(jlabFirst);
         jfrm.add(jtfFirst);
         jfrm.add(jlabSecond);
         jfrm.add(jtfSecond);
+        jfrm.add(jcbLoc);
         jfrm.add(jbtnComp);
         jfrm.add(jlabResult);
 
@@ -47,6 +52,7 @@ public class SwingFC implements ActionListener {
 
     public void actionPerformed(ActionEvent ae) {
         int i = 0, j = 0; // cursor that go through both files
+        int count = 0; // track valid match
 
         // confirm that both file names have been entered
         if(jtfFirst.getText().equals("")) {
@@ -65,10 +71,14 @@ public class SwingFC implements ActionListener {
                 i = f1.read();
                 j = f2.read();
                 if (i != j) break;
+                count++;
             } while (i != -1 && j != -1);
 
             if (i != j) {
-                jlabResult.setText("Files are not the same.");
+                if (jcbLoc.isSelected())
+                    jlabResult.setText("Files differ at location " + count);
+                else
+                    jlabResult.setText("Files are not the same.");
             } else {
                 jlabResult.setText("Files are the same");
             }
